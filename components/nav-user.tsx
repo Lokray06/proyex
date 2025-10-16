@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { SettingsIcon } from "lucide-react"
 
 export function NavUser({
   user,
@@ -92,6 +93,10 @@ export function NavUser({
                 Account
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            <DropdownMenuItem>
+              <SettingsIcon />
+              <span>Settings</span>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <IconLogout className="text-destructive" />

@@ -20,16 +20,16 @@ import {
 } from "@/components/ui/sidebar"
 
 export function ProjectSwitcher({
-  teams,
+  projects: projects,
 }: {
-  teams: {
+  projects: {
     name: string
     logo: React.ElementType
-    plan: string
+    roleInTheProject: string
   }[]
 }) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const [activeTeam, setActiveTeam] = React.useState(projects[0])
 
   if (!activeTeam) {
     return null
@@ -49,7 +49,7 @@ export function ProjectSwitcher({
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate text-xs">{activeTeam.roleInTheProject}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -61,9 +61,9 @@ export function ProjectSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Projects
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {projects.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
                 onClick={() => setActiveTeam(team)}
@@ -81,7 +81,7 @@ export function ProjectSwitcher({
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
+              <div className="text-muted-foreground font-medium">Add project</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

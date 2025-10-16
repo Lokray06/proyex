@@ -1,5 +1,6 @@
 // app/(dashboard)/layout.tsx
 import { AppSidebar } from "@/components/app-sidebar"
+import { MyCommandDialog } from "@/components/command-dialog"
 import { SiteHeader } from "@/components/site-header"
 import {
     SidebarInset,

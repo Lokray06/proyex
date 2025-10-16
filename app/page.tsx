@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navbar */}
-      <header className="w-full border-b">
+      <header className="w-full border-b bg-background/10">
         <div className="container mx-auto flex items-center justify-between py-4 px-6">
           <div className="flex gap-3">
             <ThemeToggle />
@@ -32,8 +32,8 @@ export default function Home() {
         {/* FOREGROUND CONTENT: Ensure this layer has a higher z-index (z-10) */}
         <div className="relative z-10 flex flex-col items-center justify-center">
           <Logo className="text-7xl text-foreground mb-4 font-bold" />
-          <p className="text-lg text-muted-foreground mb-8">
-            Manage your projects smarter.
+          <p className="text-lg text-foreground/70 font-semibold mb-8">
+            MANAGE YOUR PROYECTS SMARTER
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">

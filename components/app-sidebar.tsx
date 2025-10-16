@@ -41,6 +41,8 @@ import { Calendar } from "./ui/calendar";
 import { Logo } from "./logo";
 import { ProjectSwitcher } from "./project-switcher";
 import { ParamValue } from "next/dist/server/request/params";
+import { CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandSeparator } from "@/components/ui/command";
+import { MyCommandDialog } from "./command-dialog";
 
 // Static data that does not depend on URL parameters can be defined here.
 // We'll define everything here except the navMain URLs, which are dynamic.
@@ -102,55 +104,26 @@ const staticData = {
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
       title: "Search",
       url: "#",
       icon: IconSearch,
     },
   ],
-  documents: [
-    /*
+  projects: [
     {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-    */
-  ],
-  teams: [
-    {
-      name: "Acme Inc",
+      name: "Mockup development",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      roleInTheProject: "Project Manager",
     },
     {
-      name: "Acme Corp.",
+      name: "Google redesign",
       logo: AudioWaveform,
-      plan: "Startup",
+      roleInTheProject: "Desingn Director",
     },
     {
-      name: "Evil Corp.",
+      name: "Database migration",
       logo: Command,
-      plan: "Free",
+      roleInTheProject: "Backend Developer",
     },
   ],
 }
@@ -210,11 +183,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <ProjectSwitcher teams={data.teams} />
+        <ProjectSwitcher projects={data.projects} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         {/* <NavDocuments items={data.documents} /> */}
+        </SidebarContent>
+        <SidebarFooter>
         <Calendar
           mode="single"
           selected={date}
@@ -226,9 +201,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               "text-foreground opacity-100 cursor-default pointer-events-none",
           }}
         />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
-      <SidebarFooter>
+        <MyCommandDialog className="justify-end"></MyCommandDialog>
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
