@@ -12,7 +12,9 @@ import {
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
+  IconLayoutKanban,
   IconListDetails,
+  IconMessage,
   IconReport,
   IconSearch,
   IconSettings,
@@ -32,13 +34,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { GalleryVerticalEnd } from "lucide-react";
+import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
+import { Calendar } from "./ui/calendar";
+import { Logo } from "./logo";
+import { ProjectSwitcher } from "./project-switcher";
 
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
+    role: "Project Manager",
   },
   navMain: [
     {
@@ -47,19 +53,14 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "Kanban",
       url: "#",
-      icon: IconListDetails,
+      icon: IconLayoutKanban,
     },
     {
-      title: "Analytics",
+      title: "Messages",
       url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
+      icon: IconMessage,
     },
     {
       title: "Team",
@@ -133,6 +134,7 @@ const data = {
     },
   ],
   documents: [
+    /*
     {
       name: "Data Library",
       url: "#",
@@ -148,32 +150,49 @@ const data = {
       url: "#",
       icon: IconFileWord,
     },
+    */
+  ],
+  teams: [
+    {
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [date, setDate] = React.useState<Date | undefined>(new Date())
+
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="/" className="flex items-center gap-2 font-medium">
-                <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <Image src="/logo.png" alt="ProyeX logo" width={50} height={50} />
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <ProjectSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {/* <NavDocuments items={data.documents} /> */}
+        <Calendar
+          mode="single"
+          selected={date}
+          disabled={() => true} // disables date clicks, keeps nav active
+          className="rounded-lg border"
+          classNames={{
+            disabled:
+              // restore normal text color and full opacity; make it look active but still not clickable
+              "text-foreground opacity-100 cursor-default pointer-events-none",
+          }}
+        />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

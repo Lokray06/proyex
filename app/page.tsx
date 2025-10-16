@@ -16,14 +16,14 @@ export default function Home() {
       <header className="w-full border-b">
         <div className="container mx-auto flex items-center justify-between py-4 px-6">
           <div className="flex gap-3">
-            <ThemeToggle/>
+            <ThemeToggle />
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-24">
-        <Logo className="text-7xl sm:text-8xl mb-4 font-bold" />
+        <Logo className="text-7xl text-foreground mb-4 font-bold" />
         <p className="text-lg text-muted-foreground mb-8">
           Manage your projects smarter.
         </p>
@@ -42,7 +42,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t py-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} ProyeX Inc. — 
+        © {new Date().getFullYear()} ProyeX Inc. —
         <Button variant={"link"}><a href="https://github.com/Lokray06" target="blank">Lokray06</a></Button>
       </footer>
     </div>

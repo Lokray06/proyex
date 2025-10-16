@@ -1,7 +1,7 @@
 import { GalleryVerticalEnd } from "lucide-react"
 
 import { SignupForm } from "@/components/signup-form"
-import Image from "next/image";
+import { Logo } from "@/components/logo";
 
 export default function SignupPage() {
   return (
@@ -12,7 +12,7 @@ export default function SignupPage() {
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            <Image src="/logo.png" alt="ProyeX logo" width={50} height={50}/>
+            <Logo className="text-[12px] text-foreground" />
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
