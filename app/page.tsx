@@ -6,6 +6,8 @@ import { Logo } from "@/components/logo";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
+// ⭐️ IMPORT THE NEW BACKGROUND COMPONENT
+import { FloatingPathsBackground } from "@/components/floating-paths";
 
 export default function Home() {
   const router = useRouter();
@@ -22,19 +24,26 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-24">
-        <Logo className="text-7xl text-foreground mb-4 font-bold" />
-        <p className="text-lg text-muted-foreground mb-8">
-          Manage your projects smarter.
-        </p>
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-24 relative">
 
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button size="lg" onClick={() => router.push("/login")}>
-            Login
-          </Button>
-          <Button size="lg" variant="outline" onClick={() => router.push("/signup")}>
-            Sign up
-          </Button>
+        {/* ⭐️ BACKGROUND LAYER: Use the new component, place it absolutely, and set z-0 */}
+        <FloatingPathsBackground className="z-0 opacity-70" />
+
+        {/* FOREGROUND CONTENT: Ensure this layer has a higher z-index (z-10) */}
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <Logo className="text-7xl text-foreground mb-4 font-bold" />
+          <p className="text-lg text-muted-foreground mb-8">
+            Manage your projects smarter.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button size="lg" onClick={() => router.push("/login")}>
+              Login
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => router.push("/signup")}>
+              Sign up
+            </Button>
+          </div>
         </div>
       </main>
 
