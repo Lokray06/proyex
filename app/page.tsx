@@ -42,7 +42,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t py-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} ProyeX Inc. —
+        © {new Date().getFullYear()} Proyex —
         <Button variant={"link"}><a href="https://github.com/Lokray06" target="blank">Lokray06</a></Button>
       </footer>
     </div>

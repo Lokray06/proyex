@@ -1,5 +1,7 @@
 "use client"
 import Image from "next/image";
+import Link from "next/link"
+import { useParams } from "next/navigation"
 import * as React from "react"
 import {
   IconCamera,
@@ -38,36 +40,18 @@ import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { Logo } from "./logo";
 import { ProjectSwitcher } from "./project-switcher";
+import { ParamValue } from "next/dist/server/request/params";
 
-const data = {
+// Static data that does not depend on URL parameters can be defined here.
+// We'll define everything here except the navMain URLs, which are dynamic.
+const staticData = {
   user: {
+    userId: "123",
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
     role: "Project Manager",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Kanban",
-      url: "#",
-      icon: IconLayoutKanban,
-    },
-    {
-      title: "Messages",
-      url: "#",
-      icon: IconMessage,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
   navClouds: [
     {
       title: "Capture",
@@ -171,7 +155,56 @@ const data = {
   ],
 }
 
+/**
+ * Helper function to create the navMain items with dynamic URLs.
+ * * NOTE: The userId is no longer used in the URL construction below.
+ * @param {string} userId - The current user ID (still passed for completeness/future use).
+ * @param {string} projectId - The current project ID from URL params.
+ */
+const getNavMain = (userId: ParamValue, projectId: ParamValue) => [
+  {
+    title: "Dashboard",
+    // 💡 FIX: Removed the /${userId} segment.
+    url: `/dashboard/${projectId}`,
+    icon: IconDashboard,
+  },
+  {
+    title: "Kanban",
+    // 💡 FIX: Removed the /${userId} segment.
+    url: `/kanban/${projectId}`,
+    icon: IconLayoutKanban,
+  },
+  {
+    title: "Messages",
+    // 💡 FIX: Removed the /${userId} segment.
+    url: `/messages/${projectId}`,
+    icon: IconMessage,
+  },
+  {
+    title: "Team",
+    // 💡 FIX: Removed the /${userId} segment.
+    url: `/team/${projectId}`,
+    icon: IconUsers,
+  },
+];
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const params = useParams();
+
+  // Keep the project ID fallback to avoid "undefined" in the URL
+  const projectId = (params.projectId as string) || 'inventedID';
+
+  // You can now remove the 'userId' logic entirely, or simplify it:
+  const userId = params.userId; // Not used for link construction now
+
+  // Use React.useMemo...
+  const data = React.useMemo(() => ({
+    ...staticData,
+    // Pass userId and projectId to the helper
+    navMain: getNavMain(userId, projectId),
+  }), [userId, projectId]);
+
+
   const [date, setDate] = React.useState<Date | undefined>(new Date())
 
   return (
