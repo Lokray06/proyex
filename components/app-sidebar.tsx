@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion";
 import * as React from "react"
 import {
   IconCamera,
@@ -35,8 +36,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
+  useSidebar
 } from "@/components/ui/sidebar"
-import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
+import { AudioWaveform, Command, GalleryVerticalEnd, SearchIcon } from "lucide-react";
 import { Calendar } from "./ui/calendar";
 import { Logo } from "./logo";
 import { ProjectSwitcher } from "./project-switcher";
@@ -162,46 +165,102 @@ const getNavMain = (userId: ParamValue, projectId: ParamValue) => [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const params = useParams();
+  const [openSearch, setOpenSearch] = React.useState(false)
+  const { state } = useSidebar() // 👈 Get sidebar collapsed/expanded state here
+  const isCollapsed = state === "collapsed"
 
-  // Keep the project ID fallback to avoid "undefined" in the URL
-  const projectId = (params.projectId as string) || 'inventedID';
-
-  // You can now remove the 'userId' logic entirely, or simplify it:
-  const userId = params.userId; // Not used for link construction now
-
-  // Use React.useMemo...
-  const data = React.useMemo(() => ({
-    ...staticData,
-    // Pass userId and projectId to the helper
-    navMain: getNavMain(userId, projectId),
-  }), [userId, projectId]);
-
+  const params = useParams()
+  const projectId = (params.projectId as string) || "inventedID"
+  const userId = params.userId
+  const data = React.useMemo(
+    () => ({
+      ...staticData,
+      navMain: getNavMain(userId, projectId),
+    }),
+    [userId, projectId]
+  )
 
   const [date, setDate] = React.useState<Date | undefined>(new Date())
+  const day = date?.getDate()
+  const month = date?.toLocaleString("en-US", { month: "short" })
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <ProjectSwitcher projects={data.projects} />
       </SidebarHeader>
-      <SidebarContent>
+
+      <SidebarContent className="overflow-x-hidden">
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        </SidebarContent>
-        <SidebarFooter>
-        <Calendar
-          mode="single"
-          selected={date}
-          disabled={() => true} // disables date clicks, keeps nav active
-          className="rounded-lg border"
-          classNames={{
-            disabled:
-              // restore normal text color and full opacity; make it look active but still not clickable
-              "text-foreground opacity-100 cursor-default pointer-events-none",
-          }}
-        />
-        <MyCommandDialog className="justify-end"></MyCommandDialog>
+        <SidebarSeparator className="my-2 opacity-60 w-[calc(100%-1.5rem)] mx-auto" />
+
+        {/* --- Calendar (full vs collapsed) --- */}
+        <div className="flex flex-col items-center justify-center px-3 py-2">
+          <AnimatePresence mode="wait" initial={false}>
+            {!isCollapsed ? (
+              // Expanded Calendar
+              <motion.div
+                key="expanded-calendar"
+                initial={{ opacity: 0, scale: 0.95, height: 0 }}
+                animate={{ opacity: 1, scale: 1, height: "auto" }}
+                exit={{ opacity: 0, scale: 0.9, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="w-full"
+              >
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  disabled={() => true}
+                  className="rounded-lg border shadow-sm"
+                  classNames={{
+                    disabled:
+                      "text-foreground opacity-100 cursor-default pointer-events-none",
+                  }}
+                />
+              </motion.div>
+            ) : (
+              // Collapsed Compact Date Card
+              <motion.div
+                key="collapsed-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="flex flex-col items-center justify-center w-12 h-12 rounded-lg border shadow-sm bg-muted/40"
+              >
+                <span className="text-lg font-semibold leading-none">{day}</span>
+                <span className="text-[10px] font-medium uppercase tracking-wide">
+                  {month}
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenuItem className="mt-4 list-none">
+          <SidebarMenuButton
+            tooltip="Search"
+            className="flex items-center justify-between hover:cursor-pointer w-full"
+            onClick={() => setOpenSearch(true)}
+          >
+            <div className="flex items-center gap-2">
+              <SearchIcon className="w-[16px]" />
+              <span className="text-sm">Search</span>
+            </div>
+            <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium select-none">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </SidebarMenuButton>
+
+          <MyCommandDialog
+            open={openSearch}
+            onOpenChange={setOpenSearch}
+            items={data.navMain}
+          />
+        </SidebarMenuItem>
+
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>

@@ -43,6 +43,7 @@ export function NavMain({
                   <SidebarMenuButton
                     tooltip={item.title}
                     className={`
+                      hover:cursor-pointer
                       flex items-center gap-2
                       ${isActive ? "font-bold bg-muted text-secondary-foreground hover:text-secondary-foreground hover:bg-primary/10" : ""}
                       hover:bg-muted/30 hover:text-foreground

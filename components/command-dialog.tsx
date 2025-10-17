@@ -1,17 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Icon,
-  Kanban,
-  Settings,
-  Smile,
-  User,
-} from "lucide-react"
-
+import { useRouter } from "next/navigation"
 import {
   CommandDialog,
   CommandEmpty,
@@ -20,83 +10,73 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
-import { IconDashboard, IconMessage, IconSearch, IconUsers } from "@tabler/icons-react"
+import { Settings } from "lucide-react"
 
-interface MyCommandDialogProps extends React.HTMLAttributes<HTMLSpanElement> {}
+interface NavItem {
+  title: string
+  url: string
+  icon?: React.ElementType
+}
 
-export function MyCommandDialog({ className, ...props }: MyCommandDialogProps) {
-  const [open, setOpen] = React.useState(false)
+interface MyCommandDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  items: NavItem[]
+}
 
+export function MyCommandDialog({ open, onOpenChange, items }: MyCommandDialogProps) {
+  const router = useRouter()
+
+  // ⌘K / Ctrl+K to open or close
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+      if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setOpen((open) => !open)
+        onOpenChange(!open)
       }
+      if (e.key === "Escape") onOpenChange(false)
     }
 
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
-  }, [])
+  }, [open, onOpenChange])
+
+  const handleSelect = (path: string) => {
+    router.push(path)
+    onOpenChange(false)
+  }
 
   return (
-    <>
-      <div className="p-[8px] w-full">
-        <div className="items-center hover:bg-muted rounded-sm flex gap-2 cursor-pointer p-[8px]" onClick={() => { setOpen((open) => !open) }}>
-          <IconSearch width={16} className=""></IconSearch>
-          <p className="text-sm">Search</p>
-          <p className="text-muted-foreground text-sm">
-            Press{" "}
-            <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
-              <span className="text-xs">⌘</span>K
-            </kbd>
-          </p>
-        </div>
-        <CommandDialog open={open} onOpenChange={setOpen}>
-          <CommandInput placeholder="Type a command or search..." />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Main">
-              <CommandItem>
-                <IconDashboard />
-                <span>Dashboard</span>
+    <CommandDialog open={open} onOpenChange={onOpenChange}>
+      <CommandInput placeholder="Type a page or command..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+
+        <CommandGroup heading="Main">
+          {items.map((item) => {
+            const Icon = item.icon
+            return (
+              <CommandItem
+                key={item.title}
+                onSelect={() => handleSelect(item.url)}
+              >
+                {Icon && <Icon className="mr-2 h-4 w-4" />}
+                <span>{item.title}</span>
               </CommandItem>
-              <CommandItem>
-                <Kanban />
-                <span>Kanban</span>
-              </CommandItem>
-              <CommandItem>
-                <IconMessage />
-                <span>Messages</span>
-              </CommandItem>
-              <CommandItem>
-                <IconUsers />
-                <span>Team</span>
-              </CommandItem>
-            </CommandGroup>
-            <CommandSeparator />
-            <CommandGroup heading="Settings">
-              <CommandItem>
-                <User />
-                <span>Profile</span>
-                <CommandShortcut>⌘P</CommandShortcut>
-              </CommandItem>
-              <CommandItem>
-                <CreditCard />
-                <span>Billing</span>
-                <CommandShortcut>⌘B</CommandShortcut>
-              </CommandItem>
-              <CommandItem>
-                <Settings />
-                <span>Settings</span>
-                <CommandShortcut>⌘S</CommandShortcut>
-              </CommandItem>
-            </CommandGroup>
-          </CommandList>
-        </CommandDialog>
-      </div>
-    </>
+            )
+          })}
+        </CommandGroup>
+
+        <CommandSeparator />
+
+        <CommandGroup heading="Other">
+          <CommandItem onSelect={() => handleSelect("/settings")}>
+            <Settings className="mr-2 h-4 w-4"></Settings>
+            <span>Settings</span>
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </CommandDialog>
   )
 }
