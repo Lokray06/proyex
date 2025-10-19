@@ -175,14 +175,26 @@
   --sidebar-ring: oklch(0.554 0.135 66.442);
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
 @layer base {
   * {
     /* Apply transition to borders on all elements */
-    transition: border-color 0.4s ease, color 0.4s ease, background-color 0.4s ease; 
+    transition: border-color 0.4s ease, color 0.4s ease, background-color 0.4s ease;
     @apply border-border outline-ring/50;
   }
 
-   body {
+  body {
     /* Apply transition to body background and foreground color */
     transition: background-color 0.4s ease, color 0.4s ease;
     @apply bg-background text-foreground;
