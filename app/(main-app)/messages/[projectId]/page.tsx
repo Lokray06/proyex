@@ -110,7 +110,7 @@ export default function Messages({
 
       {/* RIGHT CHAT PANEL */}
       <div className="flex-1 flex flex-col min-h-full">
-        <Card className="flex-1 flex flex-col gap-0 rounded-none border-0 min-h-0 pb-0">
+        <Card className="flex-1 flex flex-col gap-0 rounded-none border-0 min-h-0 pb-0 bg-background-muted">
           <CardHeader className="flex-shrink-0 border-b">
             <CardTitle className="flex items-center gap-3">
               <Avatar className="h-6 w-6">
@@ -149,7 +149,7 @@ export default function Messages({
                 return (
                   <div
                     key={i}
-                    className={`flex ${m.mine ? "justify-end" : "justify-start"}`} // NO mt-2 HERE
+                    className={`${isPrevSame ? "mt-1" : "mt-2"} flex ${m.mine ? "justify-end" : "justify-start"}`} // NO mt-2 HERE
                   >
                     <div className={`${base} ${side} ${shape}`}>
                       <p>{m.content}</p>

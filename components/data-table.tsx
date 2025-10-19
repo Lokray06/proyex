@@ -347,17 +347,31 @@ export function DataTable({
 }: {
   data: z.infer<typeof schema>[]
 }) {
-  const [data, setData] = React.useState(() =>
-    initialData.map((item) => ({
-      ...item,
-      priority: Math.floor(Math.random() * 5) + 1, // random 1–5
-      targetDate: new Date(
-        Date.now() + Math.floor(Math.random() * 60) * 24 * 60 * 60 * 1000 // within ~2 months
-      )
-        .toISOString()
-        .split("T")[0],
-    }))
-  )
+  // Use a stable initial state (the data prop itself)
+  const [data, setData] = React.useState(initialData)
+
+  // Use useEffect to apply the randomization only on the client after mounting
+  React.useEffect(() => {
+    setData((currentData) =>
+      currentData.map((item) => ({
+        ...item,
+        // Apply randomization here, safely on the client
+        priority:
+          item.priority === undefined
+            ? Math.floor(Math.random() * 5) + 1
+            : item.priority,
+        targetDate:
+          item.targetDate === undefined
+            ? new Date(
+                Date.now() +
+                  Math.floor(Math.random() * 60) * 24 * 60 * 60 * 1000
+              )
+                .toISOString()
+                .split("T")[0]
+            : item.targetDate,
+      }))
+    )
+  }, [initialData])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
